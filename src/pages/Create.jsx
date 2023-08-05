@@ -51,7 +51,7 @@ function Create({ editing }) {
           createdTime: Date.now(),
         })
         .then(() => {
-          navigate('/blogs');
+          navigate('/admin');
         });
   }
 

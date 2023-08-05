@@ -10,14 +10,19 @@ function Header() {
           </Link>
 
           <ul className='navbar-nav flex-row'>
-            <li className='nav-item me-3'>
+            <li className='nav-item '>
               <NavLink to='/' className='nav-link' activeclassname='active' aria-current='page'>
                 Home
               </NavLink>
             </li>
-            <li className='nav-item'>
+            <li className='nav-item mx-3'>
               <NavLink to='/blogs' className='nav-link' activeclassname='active' aria-current='page'>
                 Blogs
+              </NavLink>
+            </li>
+            <li className='nav-item'>
+              <NavLink to='/admin' className='nav-link' activeclassname='active' aria-current='page'>
+                Admin
               </NavLink>
             </li>
           </ul>

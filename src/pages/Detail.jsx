@@ -32,7 +32,7 @@ function Detail() {
       <div className='d-flex'>
         <h1 className='flex-grow-1'>{post.title}</h1>
         <div>
-          <Link to={`/blogs/${id}/edit`} className='btn btn-success'>
+          <Link to={`/admin/${id}/edit`} className='btn btn-success'>
             Edit
           </Link>
         </div>
