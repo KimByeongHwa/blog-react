@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Post() {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
 
   function onSubmit() {
-    axios.post('http://localhost:3001/posts', {
-      title: title,
-      body: body,
-    });
+    axios
+      .post('http://localhost:3001/posts', {
+        title: title,
+        body: body,
+      })
+      .then(() => {
+        navigate('/blogs');
+      });
   }
 
   return (
