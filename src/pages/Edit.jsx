@@ -1,5 +1,11 @@
+import Create from './Create';
+
 function Edit() {
-  return <div>Edit</div>;
+  return (
+    <div>
+      <Create editing={true} />
+    </div>
+  );
 }
 
 export default Edit;

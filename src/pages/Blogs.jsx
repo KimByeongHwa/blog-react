@@ -45,17 +45,22 @@ function Blogs() {
       return <div>게시글이 존재하지 않습니다.</div>;
     }
 
-    return posts.map((post) => {
-      return (
-        <Card key={post.id} title={post.title} onClick={() => navigate('/blogs/edit')}>
-          <div>
-            <button className='btn btn-danger btn-sm' onClick={(e) => deletePost(e, post.id)}>
-              Delete
-            </button>
-          </div>
-        </Card>
-      );
-    });
+    return posts
+      .filter((post) => {
+        console.log(post);
+        return post.publish;
+      })
+      .map((post) => {
+        return (
+          <Card key={post.id} title={post.title} onClick={() => navigate(`/blogs/${post.id}`)}>
+            <div>
+              <button className='btn btn-danger btn-sm' onClick={(e) => deletePost(e, post.id)}>
+                Delete
+              </button>
+            </div>
+          </Card>
+        );
+      });
   }
 
   return (
@@ -63,7 +68,7 @@ function Blogs() {
       <div className='d-flex justify-content-between mb-3'>
         <h1>Blogs</h1>
         <div>
-          <Link to='/blogs/create' className='btn btn-success'>
+          <Link to='/blogs/create' className='btn btn-primary'>
             Create New Post
           </Link>
         </div>

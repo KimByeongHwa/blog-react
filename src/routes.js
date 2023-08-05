@@ -1,8 +1,10 @@
 import Home from './pages/Home';
 import Blogs from './pages/Blogs';
-import Post from './pages/Post';
+import Create from './pages/Create';
 import Edit from './pages/Edit';
+import Detail from './pages/Detail';
 
+// TODO: createBrowserRouter 사용법 공부
 const routes = [
   {
     path: '/',
@@ -14,11 +16,15 @@ const routes = [
   },
   {
     path: '/blogs/create',
-    element: <Post />,
+    element: <Create />,
   },
   {
-    path: '/blogs/edit',
+    path: '/blogs/:id/edit',
     element: <Edit />,
+  },
+  {
+    path: '/blogs/:id',
+    element: <Detail />,
   },
 ];
 
