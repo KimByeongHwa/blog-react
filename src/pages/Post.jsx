@@ -11,8 +11,9 @@ function Post() {
       body: body,
     });
   }
+
   return (
-    <div className='container'>
+    <>
       <div className='my-3'>
         <label className='form-label'>Title</label>
         <input className='form-control' value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -26,7 +27,7 @@ function Post() {
       <button className='btn btn-primary' onClick={onSubmit}>
         Post
       </button>
-    </div>
+    </>
   );
 }
 
