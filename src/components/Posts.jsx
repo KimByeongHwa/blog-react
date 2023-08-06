@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import propTypes from 'prop-types';
 import Pagination from './Pagination';
+import Toast from './Toast';
+import useToast from '../hooks/toast';
 
 function Posts({ isAdmin }) {
   const navigate = useNavigate();
@@ -17,6 +19,8 @@ function Posts({ isAdmin }) {
   const [totalPosts, setTotalPosts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [searchText, setSearchText] = useState('');
+  const [toasts, addToast, deleteToast] = useToast();
+
   const limit = 5;
 
   useEffect(() => {
@@ -67,6 +71,7 @@ function Posts({ isAdmin }) {
     e.stopPropagation();
     axios.delete(`http://localhost:3001/posts/${id}`).then(() => {
       setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+      addToast({ text: 'Successfully deleted', type: 'success' });
     });
   }
 
@@ -108,6 +113,7 @@ function Posts({ isAdmin }) {
 
   return (
     <div>
+      <Toast toasts={toasts} deleteToast={deleteToast} />
       <input
         type='text'
         className='form-control'

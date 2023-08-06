@@ -3,6 +3,9 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import propTypes from 'prop-types';
 
+import Toast from '../components/Toast';
+import useToast from '../hooks/toast';
+
 function Create({ editing }) {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -14,6 +17,7 @@ function Create({ editing }) {
   const [originalPublish, setOriginalPublish] = useState(false);
   const [isTitleError, setIsTitleError] = useState(false);
   const [isBodyError, setIsBodyError] = useState(false);
+  const [toasts, addToast, deleteToast] = useToast();
 
   useEffect(() => {
     if (editing) {
@@ -71,7 +75,11 @@ function Create({ editing }) {
             createdTime: Date.now(),
           })
           .then(() => {
-            navigate('/admin');
+            addToast({
+              type: 'success',
+              text: 'Successfully Created',
+            });
+            // navigate('/admin');
           });
     }
   }
@@ -86,6 +94,7 @@ function Create({ editing }) {
 
   return (
     <>
+      <Toast toasts={toasts} deleteToast={deleteToast} />
       <div className='my-3'>
         <h1>{editing ? 'Edit' : 'Create'} a blog post</h1>
         <label className='form-label'>Title</label>
