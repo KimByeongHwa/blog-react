@@ -3,9 +3,11 @@ import Header from './components/Header';
 import routes from './routes';
 import Toast from './components/Toast';
 import useToast from './hooks/toast';
+import { useSelector } from 'react-redux';
 
 function App() {
-  const [toasts, addToast, deleteToast] = useToast();
+  const toasts = useSelector((state) => state.toast.toasts);
+  const { deleteToast } = useToast();
   return (
     <BrowserRouter>
       <Header />

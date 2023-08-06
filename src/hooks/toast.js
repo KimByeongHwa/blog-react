@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { addToast as add, removeToast } from '../store/toastSlice';
+import { useDispatch } from 'react-redux';
 
 function useToast() {
-  const toasts = useRef([]);
-  const [, setToastRerender] = useState(false);
+  const dispatch = useDispatch();
 
   function addToast(toast) {
     const id = uuidv4();
@@ -12,9 +12,7 @@ function useToast() {
       id: id,
     };
 
-    // setToasts((prev) => [...prev, toastWithId]);
-    toasts.current = [...toasts.current, toastWithId];
-    setToastRerender((prev) => !prev);
+    dispatch(add(toastWithId));
 
     setTimeout(() => {
       deleteToast(id);
@@ -22,16 +20,10 @@ function useToast() {
   }
 
   function deleteToast(id) {
-    const filteredToasts = toasts.current.filter((toast) => {
-      return toast.id !== id;
-    });
-
-    // setToasts(filteredToasts);
-    toasts.current = filteredToasts;
-    setToastRerender((prev) => !prev);
+    dispatch(removeToast(id));
   }
 
-  return [toasts.current, addToast, deleteToast];
+  return { addToast: addToast, deleteToast: deleteToast };
 }
 
 export default useToast;

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import propTypes from 'prop-types';
-
 import Toast from '../components/Toast';
 import useToast from '../hooks/toast';
 
@@ -17,7 +16,7 @@ function Create({ editing }) {
   const [originalPublish, setOriginalPublish] = useState(false);
   const [isTitleError, setIsTitleError] = useState(false);
   const [isBodyError, setIsBodyError] = useState(false);
-  const [toasts, addToast, deleteToast] = useToast();
+  const { toasts, addToast, deleteToast } = useToast();
 
   useEffect(() => {
     if (editing) {
@@ -79,7 +78,7 @@ function Create({ editing }) {
               type: 'success',
               text: 'Successfully Created',
             });
-            // navigate('/admin');
+            navigate('/admin');
           });
     }
   }
