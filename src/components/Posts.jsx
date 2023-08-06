@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Card from '../components/Card';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { bool } from 'prop-types';
+import propTypes from 'prop-types';
 import Pagination from './Pagination';
 
 function Posts({ isAdmin }) {
@@ -16,6 +16,7 @@ function Posts({ isAdmin }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPosts, setTotalPosts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchText, setSearchText] = useState('');
   const limit = 5;
 
   useEffect(() => {
@@ -24,36 +25,42 @@ function Posts({ isAdmin }) {
 
   function onClickPageButton(page) {
     navigate(`${location.pathname}?page=${page}`);
+    setCurrentPage(page);
     getPosts(page);
   }
 
-  function getPosts(page = 1) {
-    let params = {
-      _page: page,
-      _limit: 5,
-      _sort: 'id',
-      _order: 'desc',
-    };
+  const getPosts = useCallback(
+    (page = 1) => {
+      let params = {
+        _page: page,
+        _limit: 5,
+        _sort: 'id',
+        _order: 'desc',
+        title_like: searchText,
+      };
 
-    if (!isAdmin) {
-      params = { ...params, publish: true };
-    }
+      if (!isAdmin) {
+        params = { ...params, publish: true };
+      }
 
-    axios
-      .get(`http://localhost:3001/posts`, {
-        params: params,
-      })
-      .then((res) => {
-        setTotalPosts(parseInt(res.headers['x-total-count']));
-        setPosts(res.data);
-        setLoading(false);
-      });
-  }
+      axios
+        .get(`http://localhost:3001/posts`, {
+          params: params,
+        })
+        .then((res) => {
+          setTotalPosts(parseInt(res.headers['x-total-count']));
+          setPosts(res.data);
+          setLoading(false);
+        });
+    },
+    [isAdmin, searchText]
+  );
 
   useEffect(() => {
     setCurrentPage(parseInt(pageParam) || 1);
     getPosts(parseInt(pageParam || 1));
-  }, [pageParam]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 삭제 방법 1
   function deletePost(e, id) {
@@ -89,22 +96,43 @@ function Posts({ isAdmin }) {
     });
   }
 
-  if (loading) return <LoadingSpinner />;
-
-  if (posts.length === 0) {
-    return <div>게시글이 존재하지 않습니다.</div>;
+  function onSearch(e) {
+    if (e.key === 'Enter') {
+      navigate(`${location.pathname}?page=1`);
+      setCurrentPage(1);
+      getPosts(1);
+    }
   }
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div>
-      {renderPosts()}
-      {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onClick={onClickPageButton} />}
+      <input
+        type='text'
+        className='form-control'
+        placeholder='Search...'
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        onKeyUp={onSearch}
+      />
+      <hr />
+      {posts.length === 0 ? (
+        <div>No search results found</div>
+      ) : (
+        <>
+          {renderPosts()}
+          {totalPages > 1 && (
+            <Pagination currentPage={currentPage} totalPages={totalPages} onClick={onClickPageButton} />
+          )}
+        </>
+      )}
     </div>
   );
 }
 
 Posts.propTypes = {
-  isAdmin: bool,
+  isAdmin: propTypes.bool,
 };
 
 Posts.defaultProps = {

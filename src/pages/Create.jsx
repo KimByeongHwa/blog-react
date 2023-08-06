@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { bool } from 'prop-types';
+import propTypes from 'prop-types';
 
 function Create({ editing }) {
   const navigate = useNavigate();
   const { id } = useParams();
-
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [originalTitle, setOriginalTitle] = useState('');
   const [originalBody, setOriginalBody] = useState('');
   const [publish, setPublish] = useState(false);
   const [originalPublish, setOriginalPublish] = useState(false);
+  const [isTitleError, setIsTitleError] = useState(false);
+  const [isBodyError, setIsBodyError] = useState(false);
 
   useEffect(() => {
     if (editing) {
@@ -31,28 +32,48 @@ function Create({ editing }) {
     return title !== originalTitle || body !== originalBody || publish !== originalPublish;
   }
 
+  function valaidateForm() {
+    let validated = true;
+
+    if (title === '') {
+      setIsTitleError(true);
+      validated = false;
+    }
+
+    if (body === '') {
+      setIsBodyError(true);
+      validated = false;
+    }
+
+    return validated;
+  }
+
   function onSubmit() {
-    if (editing) {
-      axios
-        .patch(`http://localhost:3001/posts/${id}`, {
-          title: title,
-          body: body,
-          publish: publish,
-        })
-        .then(() => {
-          navigate(`/blogs/${id}`);
-        });
-    } else
-      axios
-        .post('http://localhost:3001/posts', {
-          title: title,
-          body: body,
-          publish: publish,
-          createdTime: Date.now(),
-        })
-        .then(() => {
-          navigate('/admin');
-        });
+    setIsTitleError(false);
+    setIsBodyError(false);
+    if (valaidateForm()) {
+      if (editing) {
+        axios
+          .patch(`http://localhost:3001/posts/${id}`, {
+            title: title,
+            body: body,
+            publish: publish,
+          })
+          .then(() => {
+            navigate(`/blogs/${id}`);
+          });
+      } else
+        axios
+          .post('http://localhost:3001/posts', {
+            title: title,
+            body: body,
+            publish: publish,
+            createdTime: Date.now(),
+          })
+          .then(() => {
+            navigate('/admin');
+          });
+    }
   }
 
   function goBack() {
@@ -68,12 +89,23 @@ function Create({ editing }) {
       <div className='my-3'>
         <h1>{editing ? 'Edit' : 'Create'} a blog post</h1>
         <label className='form-label'>Title</label>
-        <input className='form-control' value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input
+          className={`form-control ${isTitleError ? 'border-danger' : ''}`}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        {isTitleError && <div className='text-danger'>Title is required.</div>}
       </div>
 
       <div className='mb-3'>
         <label className='form-label'>Body</label>
-        <textarea className='form-control' value={body} onChange={(e) => setBody(e.target.value)} rows={10} />
+        <textarea
+          className={`form-control ${isBodyError ? 'border-danger' : ''}`}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          rows={10}
+        />
+        {isBodyError && <div className='text-danger'>Body is required.</div>}
       </div>
 
       <div className='form-check mb-3'>
@@ -92,7 +124,7 @@ function Create({ editing }) {
 }
 
 Create.propTypes = {
-  editing: bool,
+  editing: propTypes.bool,
 };
 
 Create.defaultProps = {
