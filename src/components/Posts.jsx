@@ -18,6 +18,7 @@ function Posts({ isAdmin }) {
   const [totalPosts, setTotalPosts] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [searchText, setSearchText] = useState('');
+  const [error, setError] = useState('');
   const { addToast } = useToast();
   const limit = 5;
 
@@ -53,6 +54,14 @@ function Posts({ isAdmin }) {
           setTotalPosts(parseInt(res.headers['x-total-count']));
           setPosts(res.data);
           setLoading(false);
+        })
+        .catch((e) => {
+          setError('Something went wrong in DB');
+          addToast({
+            text: 'Something went wrong in DB',
+            type: 'danger',
+          });
+          setLoading(false);
         });
     },
     [isAdmin, searchText]
@@ -67,13 +76,22 @@ function Posts({ isAdmin }) {
   // 삭제 방법 1
   function deletePost(e, id) {
     e.stopPropagation();
-    axios.delete(`http://localhost:3001/posts/${id}`).then(() => {
-      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-      addToast({ text: 'Successfully deleted', type: 'success' });
-    });
+
+    axios
+      .delete(`http://localhost:3001/posts/${id}`)
+      .then(() => {
+        getPosts(1);
+        addToast({ text: 'Successfully deleted', type: 'success' });
+      })
+      .catch((e) => {
+        addToast({
+          text: 'The Posts could not be deleted',
+          type: 'danger',
+        });
+      });
   }
 
-  // 삭제 방법 2
+  // 삭제 방법 2 => Bad Way
   // function deletePost(e, id) {
   //   e.stopPropagation();
   //   axios.delete(`http://localhost:3001/posts/${id}`);
@@ -108,6 +126,10 @@ function Posts({ isAdmin }) {
   }
 
   if (loading) return <LoadingSpinner />;
+
+  if (error) {
+    return <div>error</div>;
+  }
 
   return (
     <div>

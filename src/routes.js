@@ -4,6 +4,7 @@ import Create from './pages/Create';
 import Edit from './pages/Edit';
 import Detail from './pages/Detail';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
 
 // TODO: createBrowserRouter 사용법 공부
 const routes = [
@@ -33,6 +34,10 @@ const routes = [
   {
     path: '/blogs/:id',
     element: <Detail />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ];
 

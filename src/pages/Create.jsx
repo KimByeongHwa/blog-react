@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import propTypes from 'prop-types';
 import Toast from '../components/Toast';
 import useToast from '../hooks/toast';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 function Create({ editing }) {
   const navigate = useNavigate();
@@ -17,17 +18,32 @@ function Create({ editing }) {
   const [isTitleError, setIsTitleError] = useState(false);
   const [isBodyError, setIsBodyError] = useState(false);
   const { toasts, addToast, deleteToast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (editing) {
-      axios.get(`http://localhost:3001/posts/${id}`).then((res) => {
-        setTitle(res.data.title);
-        setBody(res.data.body);
-        setOriginalTitle(res.data.title);
-        setOriginalBody(res.data.body);
-        setPublish(res.data.publish);
-        setOriginalPublish(res.data.publish);
-      });
+      axios
+        .get(`http://localhost:3001/posts/${id}`)
+        .then((res) => {
+          setTitle(res.data.title);
+          setBody(res.data.body);
+          setOriginalTitle(res.data.title);
+          setOriginalBody(res.data.body);
+          setPublish(res.data.publish);
+          setOriginalPublish(res.data.publish);
+          setLoading(false);
+        })
+        .catch((e) => {
+          setError('Something went wrong in DB');
+          addToast({
+            text: 'Something went wrong in DB',
+            type: 'danger',
+          });
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
   }, [editing, id]);
 
@@ -64,6 +80,12 @@ function Create({ editing }) {
           })
           .then(() => {
             navigate(`/blogs/${id}`);
+          })
+          .catch((e) => {
+            addToast({
+              text: 'We could not update blog',
+              type: 'danger',
+            });
           });
       } else
         axios
@@ -79,6 +101,12 @@ function Create({ editing }) {
               text: 'Successfully Created',
             });
             navigate('/admin');
+          })
+          .catch((e) => {
+            addToast({
+              text: 'We could not create blog',
+              type: 'danger',
+            });
           });
     }
   }
@@ -89,6 +117,14 @@ function Create({ editing }) {
 
   function onChangePublish(e) {
     setPublish(e.target.checked);
+  }
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
   return (
