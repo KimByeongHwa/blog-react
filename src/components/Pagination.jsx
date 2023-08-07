@@ -4,7 +4,7 @@ function Pagination({ currentPage, totalPages, onClick, limit }) {
   const currentGroup = Math.ceil(currentPage / limit);
   const lastGroup = Math.ceil(totalPages / limit);
   const startPage = limit * (currentGroup - 1) + 1;
-  const lastPageInLastGroup = currentGroup === lastGroup ? totalPages % limit : limit;
+  const numberOfPageForGroup = currentGroup === lastGroup && totalPages % limit !== 0 ? totalPages % limit : limit;
 
   return (
     <nav aria-label='Page navigation example'>
@@ -21,7 +21,7 @@ function Pagination({ currentPage, totalPages, onClick, limit }) {
             </div>
           </li>
         )}
-        {Array(lastPageInLastGroup)
+        {Array(numberOfPageForGroup)
           .fill(startPage)
           .map((value, index) => value + index)
           .map((pageNumber) => {

@@ -91,16 +91,6 @@ function Posts({ isAdmin }) {
       });
   }
 
-  // 삭제 방법 2 => Bad Way
-  // function deletePost(e, id) {
-  //   e.stopPropagation();
-  //   axios.delete(`http://localhost:3001/posts/${id}`);
-  // }
-
-  // useEffect(() => {
-  //   getPosts();
-  // }, [posts]);
-
   function renderPosts() {
     return posts.map((post) => {
       return (
