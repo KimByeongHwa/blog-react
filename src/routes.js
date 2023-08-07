@@ -18,14 +18,17 @@ const routes = [
   {
     path: '/admin',
     element: <Admin />,
+    auth: true,
   },
   {
     path: '/admin/create',
     element: <Create />,
+    auth: true,
   },
   {
     path: '/admin/:id/edit',
     element: <Edit />,
+    auth: true,
   },
   {
     path: '/blogs/:id',

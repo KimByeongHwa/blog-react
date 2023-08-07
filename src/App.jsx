@@ -4,6 +4,7 @@ import routes from './routes';
 import Toast from './components/Toast';
 import useToast from './hooks/toast';
 import { useSelector } from 'react-redux';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
   const toasts = useSelector((state) => state.toast.toasts);
@@ -15,7 +16,13 @@ function App() {
       <div className='container mt-3'>
         <Routes>
           {routes.map((route) => {
-            return <Route key={route.path} path={route.path} element={route.element} />;
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.auth ? <ProtectedRoute element={route.element} /> : route.element}
+              />
+            );
           })}
         </Routes>
       </div>
