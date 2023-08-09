@@ -8,7 +8,7 @@ function Toast({ toasts, deleteToast }) {
           <div
             className={`cursor-pointer alert alert-${toast.type || 'success'} m-0 py-2 mt-2`}
             key={toast.id}
-            onClick={() => deleteToast()}
+            onClick={() => deleteToast(toast.id)}
           >
             {toast.text}
           </div>
